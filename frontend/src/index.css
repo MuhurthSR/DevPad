@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 95%;
+
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 240 10% 6%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 142 70% 45%;
+    --primary-foreground: 0 0% 2%;
+
+    --secondary: 240 5% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 240 5% 15%;
+    --muted-foreground: 240 5% 64.9%;
+
+    --accent: 240 5% 12%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 240 5% 12%;
+    --input: 240 5% 15%;
+    --ring: 142 70% 45%;
+
+    --radius: 0.5rem;
+
+    --surface: 240 10% 6%;
+    --surface-hover: 240 5% 10%;
+
+    --sidebar-background: 240 10% 5%;
+    --sidebar-foreground: 240 5% 64.9%;
+    --sidebar-primary: 142 70% 45%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 240 5% 10%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 5% 10%;
+    --sidebar-ring: 142 70% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Geist Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .card-depth {
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 8px 16px -4px rgba(0,0,0,0.4);
+  }
+
+  .card-depth-hover {
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1), 0 12px 24px -8px rgba(0,0,0,0.5);
+  }
+
+  .active-state {
+    @apply text-foreground;
+    background: hsl(0 0% 100% / 0.05);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+  }
+
+  .zen-editor {
+    @apply font-mono leading-relaxed text-sm;
+    max-width: 65ch;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(240 5% 20%);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(240 5% 30%);
+}
