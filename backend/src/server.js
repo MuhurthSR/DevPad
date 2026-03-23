@@ -3,7 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import { query } from './config/db.js';
-import {authRoutes} from '../src/features/auth/auth.routes.js'
+import authRoutes from './features/auth/auth.routes.js'
 
 dotenv.config();
 

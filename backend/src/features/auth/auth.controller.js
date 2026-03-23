@@ -9,11 +9,12 @@ export const register = async(req,res) => {
       return res.status(400).json({error : "All fields are required"});
     }
 
-    const newUser = await createUser(username,email,password);
+    const {user,token} = await createUser(username,email,password);
 
     res.status(201).json({
       message : "User Registered Successfully",
-      user : newUser
+      user,
+      token
     })
   }catch(error){
     console.error("Registration Error : ",error);
@@ -32,8 +33,9 @@ export const login = async(req,res) => {
 
     const authData = await loginUser(email,password);
 
-    res.status(200).json({message : "Login Successfull",...authData});
+    res.status(200).json({message : "Login Successful",...authData});
   }catch(error){
-    res.status(401).json({ error: error.message });
+    const isAuthError = error.message === "Invalid email or password";
+    res.status(isAuthError ? 401 : 500).json({ error: error.message });
   }
 };
