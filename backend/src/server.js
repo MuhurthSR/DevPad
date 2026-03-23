@@ -3,6 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import { query } from './config/db.js';
+import {authRoutes} from '../src/features/auth/auth.routes.js'
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+app.use('/api/auth',authRoutes)
 
 app.get('/api/health',async (req, res) => {
     try{

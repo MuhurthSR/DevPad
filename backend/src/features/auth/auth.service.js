@@ -27,14 +27,16 @@ export const createUser = async(username,email,plainTextPassword) => {
 };
 
 export const loginUser = async(email,plainTextPassword) =>{
+  
   const sql = `SELECT * FROM users WHERE user_email = $1`;
 
   const result = await query(sql,[email]);
-  const user = result.rows[0];
 
+  const user = result.rows[0];
   if(!user) throw new Error("Invalid email or password");
 
   const isValid = await comparePassword(plainTextPassword,user.password_hash);
+  if (!isValid) throw new Error("Invalid email or password");
 
   const token = generateToken(user.id);
 
