@@ -1,6 +1,8 @@
-import { CalendarDays, FileText, Lightbulb, FolderKanban, PanelLeftClose, PanelLeft } from "lucide-react";
+import { useState } from "react";
+import { CalendarDays, FileText, Lightbulb, FolderKanban, PanelLeftClose, PanelLeft, LogOut, User } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const navItems = [
   { title: "Daily Tracker", url: "/", icon: CalendarDays },
@@ -11,18 +13,40 @@ const navItems = [
 
 const transition = { type: "tween" as const, ease: [0.2, 0.8, 0.2, 1] as [number, number, number, number], duration: 0.2 };
 
+// Decode username from JWT payload without any library
+const getUsernameFromToken = (): string => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return "User";
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.username ?? "User";
+  } catch {
+    return "User";
+  }
+};
+
 interface AppSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
 }
 
 export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const username = getUsernameFromToken();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <motion.aside
       animate={{ width: collapsed ? 56 : 240 }}
       transition={transition}
       className="h-screen flex flex-col bg-sidebar border-r border-sidebar-border shrink-0 overflow-hidden"
     >
+      {/* Header */}
       <div className="h-14 flex items-center justify-between px-3">
         <AnimatePresence>
           {!collapsed && (
@@ -48,6 +72,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
         </button>
       </div>
 
+      {/* Nav */}
       <nav className="flex-1 px-2 py-2 space-y-0.5">
         {navItems.map((item) => (
           <NavLink
@@ -75,17 +100,47 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
         ))}
       </nav>
 
-      <div className="px-3 py-3 border-t border-sidebar-border">
+      {/* Profile + Logout */}
+      <div className="relative px-2 py-3 border-t border-sidebar-border">
+        <button
+          onClick={() => setMenuOpen((v) => !v)}
+          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-md text-sidebar-foreground hover:bg-surface-hover hover:text-foreground transition-colors"
+        >
+          <div className="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
+            <User size={12} className="text-primary" />
+          </div>
+          <AnimatePresence>
+            {!collapsed && (
+              <motion.span
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={transition}
+                className="text-xs font-medium whitespace-nowrap overflow-hidden"
+              >
+                {username}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </button>
+
+        {/* Dropdown — opens upward */}
         <AnimatePresence>
-          {!collapsed && (
+          {menuOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={transition}
-              className="text-2xs text-muted-foreground font-mono tabular-nums"
+              initial={{ opacity: 0, y: 6, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 6, scale: 0.97 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="absolute bottom-full left-2 right-2 mb-1 bg-card border border-border rounded-lg card-depth overflow-hidden z-50"
             >
-              v1.0.0 — DevPad
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              >
+                <LogOut size={13} />
+                Sign out
+              </button>
             </motion.div>
           )}
         </AnimatePresence>

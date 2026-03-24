@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import {query} from '../../config/db.js';
 
-export const generateToken = (userid) =>{
+export const generateToken = (userid,username,email) =>{
   return jwt.sign(
-    {id : userid},
+    {id : userid,username : username,email : email},
     process.env.JWT_SECRET,
     {expiresIn : '7d'}
   );
@@ -24,7 +24,7 @@ export const createUser = async(username,email,plainTextPassword) => {
   const result = await query(sql,[username,email,hashedPassword]);
   const user = result.rows[0];
   
-  const token = generateToken(user.id);
+  const token = generateToken(user.id,user.user_name,user.user_email);
 
   return {
     user:{id:user.id,username : user.user_name,email : user.user_email},
@@ -43,7 +43,7 @@ export const loginUser = async(email,plainTextPassword) =>{
   const isValid = await comparePassword(plainTextPassword,user.password_hash);
   if (!isValid) throw new Error("Invalid email or password");
 
-  const token = generateToken(user.id);
+  const token = generateToken(user.id,user.user_name,user.user_email);
 
   return {
     user:{id:user.id,username : user.user_name,email : user.user_email},
@@ -52,6 +52,6 @@ export const loginUser = async(email,plainTextPassword) =>{
 };
 
 
-export const comparePassword = async(plainTextPassword,hashedPassword)=>{
+const comparePassword = async(plainTextPassword,hashedPassword)=>{
   return await bcrypt.compare(plainTextPassword,hashedPassword)
 };

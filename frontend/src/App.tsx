@@ -11,6 +11,7 @@ import Projects from "./pages/Projects";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import {ProtectedRoute} from "./components/ProtectedRoute.js";
 
 const queryClient = new QueryClient();
 
@@ -29,15 +30,18 @@ const App = () => (
           <Route
             path="/*"
             element={
-              <AppLayout>
-                <Routes>
-                  <Route path="/" element={<DailyTracker />} />
-                  <Route path="/notes" element={<NoteVault />} />
-                  <Route path="/brainstorm" element={<Brainstorming />} />
-                  <Route path="/projects" element={<Projects />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </AppLayout>
+              <ProtectedRoute>
+                <AppLayout>
+                  <Routes>
+                    <Route path="/" element={<DailyTracker />} />
+                    <Route path="/notes" element={<NoteVault />} />
+                    <Route path="/brainstorm" element={<Brainstorming />} />
+                    <Route path="/projects" element={<Projects />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </AppLayout>
+              </ProtectedRoute>
+              
             }
           />
         </Routes>

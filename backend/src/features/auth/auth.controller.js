@@ -23,6 +23,28 @@ export const register = async(req,res) => {
 };
 
 
+export const getMe = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const sql = `SELECT id, user_name, user_email FROM users WHERE id = $1`;
+    const result = await query(sql, [userId]);
+
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+
+  } catch (error) {
+    console.error("Error in getMe:", error);
+    res.status(500).json({ error: "Failed to fetch user profile" });
+  }
+};
+
+
 export const login = async(req,res) => {
   try{
     const {email,password} = req.body;
