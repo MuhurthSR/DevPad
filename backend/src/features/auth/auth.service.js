@@ -32,6 +32,19 @@ export const createUser = async(username,email,plainTextPassword) => {
   }
 };
 
+export const getMe = async(userid) =>{
+  const sql = `SELECT id,user_name,user_email FROM users WHERE id = $1`;
+  
+  const result = await query(sql,[userid]);
+  const user = result.rows[0];
+
+  if(!user) throw new Error("User Not found");
+
+  return{
+    user:{id : user.id,username : user.user_name,useremail : user.user_email}
+  };
+};
+
 export const loginUser = async(email,plainTextPassword) =>{
   const sql = `SELECT id, user_name, user_email, password_hash FROM users WHERE user_email = $1`;
 

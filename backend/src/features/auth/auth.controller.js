@@ -1,4 +1,4 @@
-import { createUser,loginUser } from "./auth.service.js";
+import { createUser,loginUser,getMe as getMeService } from "./auth.service.js";
 
 export const register = async(req,res) => {
   try{
@@ -27,20 +27,14 @@ export const getMe = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const sql = `SELECT id, user_name, user_email FROM users WHERE id = $1`;
-    const result = await query(sql, [userId]);
-
-    const user = result.rows[0];
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    const user = await getMeService(userId);
 
     res.status(200).json(user);
 
   } catch (error) {
+    const isNotFound = error.message === "User Not found";
     console.error("Error in getMe:", error);
-    res.status(500).json({ error: "Failed to fetch user profile" });
+    res.status(isNotFound ? 404 : 500).json({ error: error.message });
   }
 };
 
