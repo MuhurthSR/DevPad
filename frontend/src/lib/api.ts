@@ -32,4 +32,42 @@ export const api = {
     }
     return res.json();
   },
+
+  patch: async (path : string, body : object) => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${BASE_URL}${path}`,{
+      method : "PATCH",
+      headers : {
+        "Content-Type" : "application/json",
+        "Authorization" : `Bearer ${token}`
+      },
+      body : JSON.stringify(body),
+    });
+    if(!res.ok){
+      const err = await res.json();
+      throw new Error(err.error || "Request Failed");
+    }
+
+    return res.json();
+  }, 
+
+  delete: async (path: string) => {
+    const token = localStorage.getItem("token");
+    
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+      
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || "Request Failed");
+    }
+    return res.json();
+  },
 };
